@@ -70,7 +70,7 @@ public class SecurityConfig {
                             .deleteCookies("JSESSIONID"); // Delete cookies (e.g., session cookie)
                 })
                 .authorizeHttpRequests(registry ->{
-                    registry.requestMatchers("/req/signup","/static/**","/css/**","/js/**","/index","/","/error","/posts","/posts/{id}","/api/**").permitAll();
+                    registry.requestMatchers("/req/signup","/static/**","/css/**","/js/**","/index","/","/error","/posts","/posts/{id}","/api/**", "/uploads/**").permitAll();
                     registry.anyRequest().authenticated();
                 })
 

@@ -8,6 +8,9 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.UUID;
 
 @Service
 public class FileUploadService {
@@ -15,9 +18,9 @@ public class FileUploadService {
     @Value("${file-upload-path}")
     private String uploadDir;
 
-    public String uploadFile(MultipartFile file) throws IOException {
+    public String uploadFile(MultipartFile file, String username) throws IOException {
         validateFile(file);
-        String fileName = file.getOriginalFilename();
+        String fileName = UUID.randomUUID()+ username + ".png";
         Path uploadPath = Paths.get(uploadDir, fileName);
         Files.createDirectories(uploadPath.getParent());
         file.transferTo(uploadPath.toFile());

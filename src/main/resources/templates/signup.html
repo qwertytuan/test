@@ -60,7 +60,9 @@
                 if (response.status === 200) {
                   window.alert('Signup successful');
                 } else if (response.status === 409) { // Conflict status for username already exists
-                  document.getElementById('error-message').innerText = 'Username already exists';
+                  response.text().then(text => {
+                    document.getElementById('error-message').innerText = text;
+                  });
                 } else {
                   window.alert('Signup failed');
                 }

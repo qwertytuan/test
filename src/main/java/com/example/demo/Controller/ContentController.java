@@ -15,9 +15,6 @@ public class ContentController {
     @Autowired
     private UserRepo userRepo;
 
-    @GetMapping("/error")
-    public String error() {return "/error/error";}
-
     @GetMapping("/")
     public String index() {
         return "index";
@@ -32,6 +29,9 @@ public class ContentController {
     public String signup() {
         return "signup";
     }
+
+    @GetMapping("/error")
+    public String error() {return "/error/error";}
 
     @GetMapping("/index")
     public String index(@AuthenticationPrincipal User loggedInUser, Model model) {

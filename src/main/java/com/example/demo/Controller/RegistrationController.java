@@ -30,8 +30,11 @@ public class RegistrationController {
                                              @RequestParam("password") String password,
                                              @RequestParam("passwordcon") String passwordcon,
                                              @RequestParam(value = "avatar", required = false) MultipartFile avatar) throws IOException {
-        if (userRepo.findByUsername(username).isPresent()) {
-            return ResponseEntity.status(HttpStatus.CONFLICT).body("Username is already taken");
+//      if (userRepo.findByUsername(username).isPresent()) {
+//            return ResponseEntity.status(HttpStatus.CONFLICT).body("Username is already taken");
+//       }
+        if(userRepo.findByEmail(email).isPresent()){
+            return ResponseEntity.status(HttpStatus.CONFLICT).body("Email is already taken");
         }
         if (password.length() < 8) {
             return ResponseEntity.status(HttpStatus.CONFLICT).body("Password too short");
@@ -46,9 +49,10 @@ public class RegistrationController {
         user.setPassword(passwordEncoder.encode(password));
 
         if (avatar != null && !avatar.isEmpty()) {
-            String fileName = fileUploadService.uploadFile(avatar);
+            String fileName = fileUploadService.uploadFile(avatar, username);
             user.setAvatarUrl("/uploads/" + fileName);
         }
+
 
         return ResponseEntity.ok(userRepo.save(user));
     }

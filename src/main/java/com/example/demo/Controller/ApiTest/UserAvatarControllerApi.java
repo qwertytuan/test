@@ -22,7 +22,8 @@ public class UserAvatarControllerApi {
     @PostMapping("/{userId}/avatar")
     public UserModel uploadAvatar(@PathVariable Long userId, @RequestParam("file") MultipartFile file) throws IOException {
         UserModel user = userRepo.findById(userId).orElseThrow(() -> new RuntimeException("User not found"));
-        String fileName = fileUploadService.uploadFile(file);
+        String username = user.getUsername();
+        String fileName = fileUploadService.uploadFile(file, username);
         user.setAvatarUrl("/static/uploads/" + fileName);
         return userRepo.save(user);
     }
