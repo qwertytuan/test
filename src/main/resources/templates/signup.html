@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Signup Form</title>
+  <script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
+  <script nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>
+  <link rel="stylesheet" href="/css/style.css">
+  <script src="/js/signup.js" defer></script>
+</head>
+<body>
+<section>
+  <form id="signupForm" action="/req/signup" method="post" enctype="multipart/form-data">
+    <h1>Sign Up</h1>
+    <div class="inputbox">
+      <ion-icon name="person-outline"></ion-icon>
+      <input type="text" id="username" name="username" required>
+      <label for="username">Name</label>
+    </div>
+    <div class="inputbox">
+      <ion-icon name="mail-outline"></ion-icon>
+      <input type="email" id="email" name="email" required>
+      <label for="email">Email</label>
+    </div>
+    <div class="inputbox">
+      <ion-icon name="lock-closed-outline"></ion-icon>
+      <input type="password" id="password" name="password" required>
+      <label for="password">Password</label>
+    </div>
+    <div class="inputbox">
+      <ion-icon name="lock-closed-outline"></ion-icon>
+      <input type="password" id="passwordcon" name="passwordcon" required>
+      <label for="passwordcon">Confirm Password</label>
+    </div>
+    <div class="inputbox">
+      <ion-icon name="image-outline"></ion-icon>
+      <input type="file" id="avatar" name="avatar" accept="image/*">
+      <label for="avatar">Upload Avatar</label>
+    </div>
+    <button id="submit" type="submit">Sign Up</button>
+    <div class="register">
+      <p>Already have an account? <a href="/req/login">Log In</a></p>
+    </div>
+    <div id="error-message" style="color: red;"></div>
+  </form>
+</section>
+<script>
+  document.getElementById("signupForm").addEventListener('submit', function(event) {
+    event.preventDefault();
+    const formData = new FormData(this);
+    const password = formData.get('password');
+    const confirmPassword = formData.get('passwordcon');
+
+    if (password === confirmPassword) {
+      fetch('/req/signup', {
+        method: 'POST',
+        body: formData
+      })
+              .then(response => {
+                if (response.status === 200) {
+                  window.alert('Signup successful');
+                } else if (response.status === 409) { // Conflict status for username already exists
+                  document.getElementById('error-message').innerText = 'Username already exists';
+                } else {
+                  window.alert('Signup failed');
+                }
+              });
+    } else {
+      window.alert('Passwords do not match');
+    }
+  });
+</script>
+</body>
+</html>
