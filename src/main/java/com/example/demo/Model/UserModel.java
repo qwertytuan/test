@@ -14,9 +14,18 @@ public class UserModel {
     private String email;
     private String password;
     private String avatarUrl; // Add this line
+    private String role;
     @OneToMany(mappedBy = "user")
     @JsonBackReference
     private List<PostModel> posts;
+
+    public String getRole() {
+        return role;
+    }
+
+    public void setRole(String role) {
+        this.role = role;
+    }
 
     // Getters and setters
     public Long getId() {

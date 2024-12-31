@@ -57,7 +57,8 @@ public class SecurityConfig {
                 })
                 .rememberMe(rememberMeConfigurer -> {
                     rememberMeConfigurer
-                            .tokenValiditySeconds(14 * 24 * 60 * 60)
+                            //thoat brower van con nho sau 1 ngay
+                            .tokenValiditySeconds(5)
                             .key("uniqueAndSecret")
                             .userDetailsService(userDetailsService());
                 })
@@ -67,10 +68,16 @@ public class SecurityConfig {
                             .logoutSuccessUrl("/index") // Redirect to /index after logout
                             .invalidateHttpSession(true) // Invalidate the current HTTP session
                             .clearAuthentication(true) // Clear Spring Security authentication
-                            .deleteCookies("JSESSIONID"); // Delete cookies (e.g., session cookie)
+                            .deleteCookies("JSESSIONID");
+                })
+                .sessionManagement(sessionManagementConfigurer -> {
+                    sessionManagementConfigurer
+                            .invalidSessionUrl("/req/login?session=expired")
+                            .maximumSessions(1)
+                            .expiredUrl("/req/login?session=expired");
                 })
                 .authorizeHttpRequests(registry ->{
-                    registry.requestMatchers("/req/signup","/static/**","/css/**","/js/**","/index","/","/error","/posts","/posts/{id}","/api/**", "/uploads/**").permitAll();
+                    registry.requestMatchers("/req/signup","/static/**","/css/**","/js/**","/index","/","/error","/posts/**","/api/**", "/uploads/**").permitAll();
                     registry.anyRequest().authenticated();
                 })
 

@@ -8,6 +8,7 @@ import org.springframework.security.core.userdetails.User;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 @Controller
 public class ContentController {
@@ -17,11 +18,15 @@ public class ContentController {
 
     @GetMapping("/")
     public String index() {
-        return "index";
+        return "redirect:/index";
     }
 
     @GetMapping("/req/login")
-    public String login() {
+    public String login(@RequestParam(value = "session", required = false) String session, Model model) {
+        if ("expired".equals(session)) {
+            model.addAttribute("sessionExpired", true);
+            return "login";
+        }
         return "login";
     }
 

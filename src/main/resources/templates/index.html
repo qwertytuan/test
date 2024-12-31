@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>My Home Page</title>
+    <script src="/js/index.js"></script>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -63,13 +64,16 @@
     <a th:if="${!isLoggedIn}" href="/req/login">Login</a>
     <a th:if="${!isLoggedIn}" href="/req/signup">Sign Up</a>
     <a th:if="${isLoggedIn}" href="/profile" th:text="${username}"></a>
-    <img th:src="${avatarUrl}" alt="Avatar" />
+    <a th:if="${isLoggedIn}"><img th:src="${avatarUrl}" alt="Avatar"></a>
     <a th:if="${isLoggedIn}" href="/req/logout">Logout</a>
 
 </nav>
 <main>
     <h2>Posts</h2>
-    <div id="posts"></div>
+    <div id="posts">
+
+
+    </div>
     <h2>About Me</h2>
     <p>This is a paragraph about me. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam scelerisque nisl ut sapien interdum, nec ullamcorper velit dapibus. Sed ac vestibulum libero, nec tempor felis.</p>
     <h2>Services</h2>
@@ -79,25 +83,6 @@
     <p>Footer Content &copy; 2024</p>
 </footer>
 <script>
-    document.addEventListener('DOMContentLoaded', function() {
-        fetch('/api/posts')
-            .then(response => response.json())
-            .then(posts => {
-                const postsDiv = document.getElementById('posts');
-                posts.forEach(post => {
-                    const postElement = document.createElement('div');
-                    postElement.innerHTML = `
-                        <h3>${post.title}</h3>
-                        <p>${post.content}</p>
-                        <p><strong>Author:</strong> ${post.username}</p>
-                        <p><strong>Category:</strong> ${post.category}</p>
-                        <p><strong>Created Date:</strong> ${post.createdDate}</p>
-                        ${post.modifiedDate ? `<p><strong>Modified Date:</strong> ${post.modifiedDate}</p>` : ''}
-                    `;
-                    postsDiv.appendChild(postElement);
-                });
-            });
-    });
 </script>
 </body>
 </html>

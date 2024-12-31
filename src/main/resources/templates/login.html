@@ -11,7 +11,6 @@
 <body>
 <body>
 <section>
-
     <form action="/req/login" method="post">
         <h1>Login</h1>
         <div class="dialog-row">
@@ -39,5 +38,8 @@
             <p>Don't have a account ?<a href="/req/signup"> Register!!</a></p>
         </div>
     </form>
+    <div th:if="${sessionExpired}">
+        <p style="color: red;">Your session has expired. Please log in again.</p>
+    </div>
 </section>
 </body>
