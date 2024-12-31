@@ -1,3 +1,4 @@
+// RegistrationController.java
 package com.example.demo.Controller;
 
 import com.example.demo.Model.UserModel;
@@ -10,6 +11,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import jakarta.servlet.http.HttpSession;
 import java.io.IOException;
 
 @RestController
@@ -26,14 +28,23 @@ public class RegistrationController {
 
     @PostMapping(value = "/req/signup", consumes = "multipart/form-data")
     public ResponseEntity<?> createUser(@RequestParam("username") String username,
-                                             @RequestParam("email") String email,
-                                             @RequestParam("password") String password,
-                                             @RequestParam("passwordcon") String passwordcon,
-                                             @RequestParam(value = "avatar", required = false) MultipartFile avatar) throws IOException {
-//      if (userRepo.findByUsername(username).isPresent()) {
-//            return ResponseEntity.status(HttpStatus.CONFLICT).body("Username is already taken");
-//       }
-        if(userRepo.findByEmail(email).isPresent()){
+                                        @RequestParam("email") String email,
+                                        @RequestParam("password") String password,
+                                        @RequestParam("passwordcon") String passwordcon,
+                                        @RequestParam(value = "avatar", required = false) MultipartFile avatar,
+                                        @RequestParam("captcha") String captcha,
+                                        HttpSession session) throws IOException {
+        // Validate CAPTCHA
+        String expectedCaptcha = (String) session.getAttribute("captcha");
+        if (expectedCaptcha == null || !expectedCaptcha.equals(captcha)) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Invalid CAPTCHA");
+        }
+
+        // Other validation and user creation logic
+        if (userRepo.findByUsername(username).isPresent()) {
+            return ResponseEntity.status(HttpStatus.CONFLICT).body("Username is already taken");
+        }
+        if (userRepo.findByEmail(email).isPresent()) {
             return ResponseEntity.status(HttpStatus.CONFLICT).body("Email is already taken");
         }
         if (password.length() < 8) {
@@ -52,7 +63,6 @@ public class RegistrationController {
             String fileName = fileUploadService.uploadFile(avatar, username);
             user.setAvatarUrl("/uploads/" + fileName);
         }
-
 
         return ResponseEntity.ok(userRepo.save(user));
     }

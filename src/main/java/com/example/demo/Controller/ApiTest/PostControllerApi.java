@@ -1,5 +1,6 @@
 package com.example.demo.Controller.ApiTest;
 
+import com.example.demo.Error.PostNotFoundException;
 import com.example.demo.Model.PostResponse;
 import com.example.demo.Service.PostService;
 import com.example.demo.Service.UserService;
@@ -40,6 +41,9 @@ public class PostControllerApi {
     @GetMapping("/posts/{id}")
     public PostResponse getPostById(@PathVariable Long id) {
         var post = postService.getPostById(id);
+        if (post == null) {
+            throw new PostNotFoundException("Post not found with id: " + id);
+        }
         return new PostResponse(
                 post.getId(),
                 post.getTitle(),
