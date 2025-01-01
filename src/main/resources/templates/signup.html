@@ -63,6 +63,7 @@
               .then(response => {
                 if (response.status === 200) {
                   window.alert('Signup successful');
+                  window.location.replace("/req/login")
                 } else if (response.status === 409) { // Conflict status for username already exists
                   response.text().then(text => {
                     document.getElementById('error-message').innerText = text;
