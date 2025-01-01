@@ -10,6 +10,8 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import java.util.Objects;
+
 @Controller
 public class ContentController {
 
@@ -43,7 +45,8 @@ public class ContentController {
         Long userId = loggedInUser != null ? userRepo.findByUsername(loggedInUser.getUsername()).get().getId() : null;
         String username = loggedInUser != null ? loggedInUser.getUsername() : null;
         String avatarUrl = loggedInUser != null ? userRepo.findByUsername(loggedInUser.getUsername()).get().getAvatarUrl() : null;
-        model.addAttribute("avatarUrl",avatarUrl);
+        model.addAttribute("avatarUrl", Objects.requireNonNullElse(avatarUrl, "/uploads/xampp.png"));
+
         model.addAttribute("username", username);
         model.addAttribute("userId", userId);
         // Add an attribute to pass to the view to check login status
