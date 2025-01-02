@@ -6,6 +6,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Data
 @NoArgsConstructor
@@ -30,6 +31,7 @@ public class PostModel {
     @JoinColumn(name = "user_id", referencedColumnName = "id", nullable = false)
     private UserModel user;
 
+
     @Column(nullable = false)
     private String category;
 
@@ -48,5 +50,6 @@ public class PostModel {
     protected void onUpdate() {
         modifiedDate = LocalDateTime.now();
     }
+
 
 }

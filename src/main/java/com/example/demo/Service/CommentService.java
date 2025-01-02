@@ -1,5 +1,8 @@
 package com.example.demo.Service;
 
+import com.example.demo.Model.CommentModel;
+import com.example.demo.Repo.CommentRepo;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -7,17 +10,22 @@ import java.util.List;
 @Service
 public class CommentService {
 
-    public List<String> getAllComments() {
-        return null;
+    @Autowired
+    private CommentRepo commentRepo;
+
+    public List<CommentModel> getAllComments() {
+        return commentRepo.findAll();
     }
 
-    public String getCommentById(Long id) {
-        return null;
+    public List<CommentModel> getCommentByPostId(Long id) {
+
+        return commentRepo.findByPostId(id);
     }
 
     public String getPostByCommentId(Long id) {
         return null;
     }
+
 
     public void upvoteComment(Long id) {
 
@@ -29,16 +37,14 @@ public class CommentService {
     public void deleteComment(Long id, String text) {
     }
 
-    public void updateComment(Long id, String text) {
+    public void reportComment(Long id, String text) {
     }
 
-    public String getCommentOwner(Long id) {
-        return null;
-    }
-    public void reportComment(Long id) {
+    public void addComment(String text) {
     }
 
-    public void addComment(Long id, String text) {
+    public void editComment(Long id,String text) {
+
     }
 
 }

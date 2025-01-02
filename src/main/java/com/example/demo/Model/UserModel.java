@@ -19,6 +19,11 @@ public class UserModel {
     @JsonBackReference
     private List<PostModel> posts;
 
+    @OneToMany(mappedBy = "user")
+    @JsonBackReference
+    private List<CommentModel> comments;
+
+
     public String getRole() {
         return role;
     }
@@ -74,5 +79,13 @@ public class UserModel {
 
     public void setPosts(List<PostModel> posts) {
         this.posts = posts;
+    }
+
+    public List<CommentModel> getComments() {
+        return comments;
+    }
+
+    public void setComments(List<CommentModel> comments) {
+        this.comments = comments;
     }
 }
