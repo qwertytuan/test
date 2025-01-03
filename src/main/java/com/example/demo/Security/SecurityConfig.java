@@ -73,15 +73,16 @@ public class SecurityConfig {
                 })
                 .authorizeHttpRequests(registry -> {
                     registry.requestMatchers("/req/signup",
-                            "/static/**",
-                            "/css/**",
-                            "/js/**",
-                            "/index",
-                            "/",
-                            "/error",
-                            "/posts/**",
-                            "/api/**",
-                            "/uploads/**")
+                                    "/static/**",
+                                    "/css/**",
+                                    "/js/**",
+                                    "/index",
+                                    "/",
+                                    "/error",
+                                    "/posts/**",
+                                    "/api/**",
+                                    "/uploads/**",
+                                    "/user/posts/{id}")
                             .permitAll();
                     registry.requestMatchers("/admin").hasRole("ADMIN");
                     registry.anyRequest().authenticated();

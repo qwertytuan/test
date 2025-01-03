@@ -3,6 +3,7 @@ package com.example.demo.Service;
 import com.example.demo.Model.PostModel;
 import com.example.demo.Model.UserModel;
 import com.example.demo.Repo.PostRepo;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -43,6 +44,7 @@ public class PostService {
         return postRepo.save(post);
     }
 
+    @Transactional
     public void deletePost(Long id) {
         postRepo.deleteById(id);
     }
