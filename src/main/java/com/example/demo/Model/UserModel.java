@@ -21,8 +21,28 @@ public class UserModel {
 
     @OneToMany(mappedBy = "user")
     @JsonBackReference
+    private List<FriendList> friends;
+
+    @OneToMany(mappedBy = "user")
+    @JsonBackReference
     private List<CommentModel> comments;
 
+    public UserModel() {
+    }
+
+    public UserModel(String username, String email, String password, String role) {
+        this.username = username;
+        this.email = email;
+        this.password = password;
+        this.role = role;
+    }
+
+    public List<FriendList> getFriends() {
+        return friends;
+    }
+    public void setFriends(List<FriendList> friends) {
+        this.friends = friends;
+    }
 
     public String getRole() {
         return role;
