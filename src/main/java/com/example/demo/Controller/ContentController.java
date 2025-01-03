@@ -14,7 +14,7 @@ import java.util.Objects;
 
 @Controller
 public class ContentController {
-
+    final String DEFAULT_AVATAR_URL = "/uploads/xampp.png";
     @Autowired
     private UserRepo userRepo;
 
@@ -45,7 +45,7 @@ public class ContentController {
         Long userId = loggedInUser != null ? userRepo.findByUsername(loggedInUser.getUsername()).get().getId() : null;
         String username = loggedInUser != null ? loggedInUser.getUsername() : null;
         String avatarUrl = loggedInUser != null ? userRepo.findByUsername(loggedInUser.getUsername()).get().getAvatarUrl() : null;
-        model.addAttribute("avatarUrl", Objects.requireNonNullElse(avatarUrl, "/uploads/xampp.png"));
+        model.addAttribute("avatarUrl", Objects.requireNonNullElse(avatarUrl, DEFAULT_AVATAR_URL));
 
         model.addAttribute("username", username);
         model.addAttribute("userId", userId);
