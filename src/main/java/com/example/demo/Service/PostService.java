@@ -6,6 +6,7 @@ import com.example.demo.Repo.PostRepo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
@@ -44,5 +45,22 @@ public class PostService {
 
     public void deletePost(Long id) {
         postRepo.deleteById(id);
+    }
+
+
+
+    public PostModel editPost(Long postId, PostModel updatedPost, UserModel currentUser) {
+        PostModel existingPost = postRepo.findById(postId).orElse(null);
+        if (existingPost != null) {
+            if (existingPost.getUser().getId().equals(currentUser.getId()) || currentUser.getRole().contains("ADMIN")) {
+                existingPost.setTitle(updatedPost.getTitle());
+                existingPost.setImageUrl(updatedPost.getImageUrl());
+                existingPost.setContent(updatedPost.getContent());
+                existingPost.setCategory(updatedPost.getCategory());
+                existingPost.setModifiedDate(LocalDateTime.now());
+                return postRepo.save(existingPost);
+            }
+        }
+        return null;
     }
 }

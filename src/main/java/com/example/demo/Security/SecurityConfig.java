@@ -25,16 +25,13 @@ public class SecurityConfig {
         this.userService = userService;
     }
 
-
     @Bean
-    public UserDetailsService userDetailsService()
-    {
+    public UserDetailsService userDetailsService() {
         return (UserDetailsService) userService;
     }
 
     @Bean
-    public AuthenticationProvider authenticationProvider()
-    {
+    public AuthenticationProvider authenticationProvider() {
         DaoAuthenticationProvider provider = new DaoAuthenticationProvider();
         provider.setUserDetailsService((UserDetailsService) userService);
         provider.setPasswordEncoder(passwordEncoder());
@@ -42,8 +39,7 @@ public class SecurityConfig {
     }
 
     @Bean
-    public PasswordEncoder passwordEncoder()
-    {
+    public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
 
@@ -52,22 +48,21 @@ public class SecurityConfig {
         return httpSecurity
                 .csrf(AbstractHttpConfigurer::disable)
                 .formLogin(httpForm -> {
-                        httpForm.loginPage("/req/login").permitAll();
-                        httpForm.defaultSuccessUrl("/index", true);
+                    httpForm.loginPage("/req/login").permitAll();
+                    httpForm.defaultSuccessUrl("/index", true);
                 })
                 .rememberMe(rememberMeConfigurer -> {
                     rememberMeConfigurer
-                            //thoat brower van con nho sau 1 ngay
                             .tokenValiditySeconds(5)
                             .key("uniqueAndSecret")
                             .userDetailsService(userDetailsService());
                 })
                 .logout(logout -> {
                     logout
-                            .logoutUrl("/req/logout") // Triggered when /logout is accessed
-                            .logoutSuccessUrl("/index") // Redirect to /index after logout
-                            .invalidateHttpSession(true) // Invalidate the current HTTP session
-                            .clearAuthentication(true) // Clear Spring Security authentication
+                            .logoutUrl("/req/logout")
+                            .logoutSuccessUrl("/index")
+                            .invalidateHttpSession(true)
+                            .clearAuthentication(true)
                             .deleteCookies("JSESSIONID");
                 })
                 .sessionManagement(sessionManagementConfigurer -> {
@@ -76,11 +71,21 @@ public class SecurityConfig {
                             .maximumSessions(1)
                             .expiredUrl("/req/login?session=expired");
                 })
-                .authorizeHttpRequests(registry ->{
-                    registry.requestMatchers("/req/signup","/static/**","/css/**","/js/**","/index","/","/error","/posts/**","/api/**", "/uploads/**").permitAll();
+                .authorizeHttpRequests(registry -> {
+                    registry.requestMatchers("/req/signup",
+                            "/static/**",
+                            "/css/**",
+                            "/js/**",
+                            "/index",
+                            "/",
+                            "/error",
+                            "/posts/**",
+                            "/api/**",
+                            "/uploads/**")
+                            .permitAll();
+                    registry.requestMatchers("/admin").hasRole("ADMIN");
                     registry.anyRequest().authenticated();
                 })
-
                 .build();
     }
 }
