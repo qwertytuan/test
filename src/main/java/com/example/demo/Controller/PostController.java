@@ -93,20 +93,6 @@ public class PostController {
         }
     }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
     @PreAuthorize("hasRole('ADMIN')")
     @GetMapping("/admin/posts/{id}/edit")
     public String getAdminEditPostPage(@PathVariable Long id, Model model) {

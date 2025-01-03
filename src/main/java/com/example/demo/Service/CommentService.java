@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -22,6 +23,12 @@ public class CommentService {
     public List<CommentResponse> getCommentByPostId(Long postId) {
         return commentRepo.findByPostId(postId).stream().map(this::convertToResponse).collect(Collectors.toList());
     }
+
+//    public CommentModel upvoteComment(Long commentId) {
+//        Optional<CommentModel> comment = commentRepo.findById(commentId);
+//        comment.setUpvotes(comment.getUpvotes() + 1);
+//        return commentRepo.save(comment);
+//    }
 
     private CommentResponse convertToResponse(CommentModel comment) {
         CommentResponse response = new CommentResponse();

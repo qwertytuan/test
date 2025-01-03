@@ -27,6 +27,11 @@ public class CommentModel {
     @JoinColumn(name = "post_id", referencedColumnName = "id", nullable = false)
     private PostModel post;
 
+    @Column
+    private int upvotes;
+
+    @Column
+    private int downvotes;
 
     public Long getId() {
         return id;
@@ -66,5 +71,21 @@ public class CommentModel {
 
     public void setPost(PostModel post) {
         this.post = post;
+    }
+
+    public int getUpvotes() {
+        return upvotes;
+    }
+
+    public int getDownvotes() {
+        return downvotes;
+    }
+
+    public void setUpvotes(int upvotes) {
+        this.upvotes = upvotes;
+    }
+
+    public void setDownvotes(int downvotes) {
+        this.downvotes = downvotes;
     }
 }
