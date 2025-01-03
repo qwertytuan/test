@@ -51,5 +51,8 @@ public class PostModel {
         modifiedDate = LocalDateTime.now();
     }
 
+    @OneToMany(mappedBy = "post")
+    @JsonManagedReference
+    private List<CommentModel> comments;
 
 }

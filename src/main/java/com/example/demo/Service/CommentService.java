@@ -3,6 +3,7 @@ package com.example.demo.Service;
 import com.example.demo.Model.CommentModel;
 import com.example.demo.Model.CommentResponse;
 import com.example.demo.Repo.CommentRepo;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -34,5 +35,10 @@ public class CommentService {
         response.setPostTitle(comment.getPost().getTitle());
         response.setPostUrl("/posts/" + comment.getPost().getId());
         return response;
+    }
+
+    @Transactional
+    public void deleteCommentsByPostId(Long id) {
+        commentRepo.deleteByPostId(id);
     }
 }

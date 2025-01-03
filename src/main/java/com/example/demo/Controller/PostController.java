@@ -2,14 +2,13 @@ package com.example.demo.Controller;
 
 import com.example.demo.Model.PostModel;
 import com.example.demo.Model.UserModel;
+import com.example.demo.Service.CommentService;
 import com.example.demo.Service.PostService;
 import com.example.demo.Service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 
@@ -24,6 +23,9 @@ public class PostController {
 
     @Autowired
     private final UserService userService;
+
+    @Autowired
+    private CommentService commentService;
 
     public PostController(PostService postService, UserService userService) {
         this.postService = postService;
@@ -52,38 +54,53 @@ public class PostController {
             return "/error/post-not-found";
         }
     }
-    @GetMapping("/users/{userId}/posts")
-    public String getPostsByUserId(@PathVariable Long userId, Model model) {
-        UserModel user = userService.getUserById(userId);
-        if (user != null) {
-            List<PostModel> posts = postService.getPostsByUser(user);
-            model.addAttribute("posts", posts);
-            return "/test/posts";
-        } else {
-            model.addAttribute("errorMessage", "Post not found " );
-            return "/error/user-not-found";
-        }
-    }
 
-    // src/main/java/com/example/demo/Controller/PostController.java
-
-    @PostMapping("/posts/{id}/edit")
-    public String editPost(@PathVariable Long id, @ModelAttribute PostModel updatedPost, Model model, Principal principal) {
-        UserModel currentUser = (UserModel) userService.loadUserByUsername(principal.getName());
-        PostModel editedPost = postService.editPost(id, updatedPost, currentUser);
-        if (editedPost != null) {
-            model.addAttribute("post", editedPost);
-            return "redirect:/posts/" + id;
-        } else {
-            model.addAttribute("errorMessage", "You do not have permission to edit this post or post not found");
+    @GetMapping("/users/posts")
+    public String getUserPosts(Principal principal, Model model) {
+        String username = principal.getName();
+        UserModel currentUser =  userService.getUserByUsername(username);
+        List<PostModel> posts = postService.getPostsByUser(currentUser);
+        model.addAttribute("posts", posts);
+        if (posts.isEmpty()) {
+            model.addAttribute("errorMessage", "No posts found");
             return "/error/post-not-found";
         }
+        return "/post/posts";
     }
 
-    @GetMapping("/posts/{id}/edit")
+    @GetMapping("/users/{id}/posts")
+    public String getUserPosts(@PathVariable Long id, Model model) {
+        UserModel user = userService.getUserById(id);
+        List<PostModel> posts = postService.getPostsByUser(user);
+        model.addAttribute("posts", posts);
+        if (posts.isEmpty()) {
+            model.addAttribute("errorMessage", "No posts found");
+            return "/error/post-not-found";
+        }
+        return "/post/posts";
+    }
+
+    @GetMapping("/users/posts/manage")
+    public String getUserEditPostPage( Principal principal, Model model) {
+        String username = principal.getName();
+        UserModel currentUser = userService.getUserByUsername(username);
+        List<PostModel> posts = postService.getPostsByUser(currentUser);
+        if (posts.isEmpty()) {
+            model.addAttribute("errorMessage", "No posts found");
+            return "/error/post-not-found";
+        }
+        model.addAttribute("posts", posts);
+        return "/post/manage-posts";
+    }
+
+
+
+    /// /////////////////////////////////////////////
+    @GetMapping("/users/posts/{id}/edit")
     public String getUserEditPostPage(@PathVariable Long id, Model model, Principal principal) {
         PostModel post = postService.getPostById(id);
-        UserModel currentUser = (UserModel) userService.loadUserByUsername(principal.getName());
+        String username = principal.getName();
+        UserModel currentUser = userService.getUserByUsername(username);
         if (post != null && (post.getUser().getId().equals(currentUser.getId()) || currentUser.getRole().contains("ADMIN"))) {
             model.addAttribute("post", post);
             return "/post/edit-post";
@@ -93,43 +110,33 @@ public class PostController {
         }
     }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    @PreAuthorize("hasRole('ADMIN')")
-    @GetMapping("/admin/posts/{id}/edit")
-    public String getAdminEditPostPage(@PathVariable Long id, Model model) {
-        PostModel post = postService.getPostById(id);
+    @PostMapping("/users/posts/{id}/edit")
+    public String editPost(@PathVariable Long id, PostModel updatedPost, Principal principal, Model model) {
+        String username = principal.getName();
+        UserModel currentUser = userService.getUserByUsername(username);
+        PostModel post = postService.editPost(id, updatedPost, currentUser);
         if (post != null) {
-            model.addAttribute("post", post);
-            return "/admin/edit-post";
+            return "redirect:/users/posts";
         } else {
-            model.addAttribute("errorMessage", "Post not found with id: " + id);
+            model.addAttribute("errorMessage", "You do not have permission to edit this post or post not found");
             return "/error/post-not-found";
         }
     }
 
-    @PreAuthorize("hasRole('ADMIN')")
-    @PostMapping("/admin/posts/{id}/edit")
-    public String adminEditPost(@PathVariable Long id, @ModelAttribute PostModel updatedPost, Model model) {
-        PostModel editedPost = postService.editPost(id, updatedPost, null); // Admin can edit any post
-        if (editedPost != null) {
-            model.addAttribute("post", editedPost);
-            return "redirect:/posts/" + id;
+    @PostMapping("/users/posts/{id}/delete")
+    public String deletePost(@PathVariable Long id, Principal principal, Model model) {
+        String username = principal.getName();
+        UserModel currentUser = userService.getUserByUsername(username);
+        PostModel post = postService.getPostById(id);
+        if (post != null && (post.getUser().getId().equals(currentUser.getId()) || currentUser.getRole().contains("ADMIN"))) {
+            commentService.deleteCommentsByPostId(id); // Delete associated comments first
+            postService.deletePost(id);
+            return "redirect:/users/posts";
         } else {
-            model.addAttribute("errorMessage", "Post not found or could not be edited");
+            model.addAttribute("errorMessage", "You do not have permission to delete this post or post not found");
             return "/error/post-not-found";
         }
     }
+
+
 }

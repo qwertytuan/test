@@ -37,7 +37,9 @@ public class UserService implements UserDetailsService {
     public UserModel getUserById(Long userId) {
         return userRepo.findById(userId).orElse(null);
     }
-    public UserModel getUserProfile(Long userId) {
-        return userRepo.findById(userId).orElse(null);
+
+
+    public UserModel getUserByUsername(String username) {
+        return userRepo.findByUsername(username).orElse(null);
     }
 }
