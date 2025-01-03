@@ -31,7 +31,7 @@ public class PostController {
         this.postService = postService;
         this.userService = userService;
     }
-
+////////////////////////////////////
     @GetMapping("/posts")
     public String getAllPosts(Model model) {
         List<PostModel> posts = postService.getAllPost();
@@ -54,7 +54,7 @@ public class PostController {
             return "/error/post-not-found";
         }
     }
-
+////////////////////////////////////////
     @GetMapping("/users/posts")
     public String getUserPosts(Principal principal, Model model) {
         String username = principal.getName();
@@ -94,8 +94,7 @@ public class PostController {
     }
 
 
-
-    /// /////////////////////////////////////////////
+    ////////////////////////////////////////////////
     @GetMapping("/users/posts/{id}/edit")
     public String getUserEditPostPage(@PathVariable Long id, Model model, Principal principal) {
         PostModel post = postService.getPostById(id);
@@ -123,6 +122,8 @@ public class PostController {
         }
     }
 
+
+    //////////////////////////////////////////////
     @PostMapping("/users/posts/{id}/delete")
     public String deletePost(@PathVariable Long id, Principal principal, Model model) {
         String username = principal.getName();
