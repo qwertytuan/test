@@ -1,11 +1,13 @@
 package com.example.demo.Controller;
 
+import com.example.demo.Model.UserModel;
 import com.example.demo.Repo.UserRepo;
 import com.example.demo.Service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -16,10 +18,16 @@ import java.util.Objects;
 
 @Controller
 public class UserController {
-    @Autowired
     private UserService userService;
-    @Autowired
     private UserRepo userRepo;
+    private PasswordEncoder passwordEncoder;
+
+    @Autowired
+    public UserController(UserService userService, UserRepo userRepo, PasswordEncoder passwordEncoder) {
+        this.userService = userService;
+        this.userRepo = userRepo;
+        this.passwordEncoder = passwordEncoder;
+    }
 
     @GetMapping("/users")
     public String ShowUsers() {
@@ -54,5 +62,23 @@ public class UserController {
         model.addAttribute("userName", username);
         model.addAttribute("userId", userId);
         return "/user/profile";
+    }
+
+    @PostMapping("/profile/update")
+    public String UpdateProfile(@AuthenticationPrincipal User loggedInUser,String password, Model model) {
+        if (loggedInUser == null) {
+            return "redirect:/index";
+        }
+        //Fetch user from the database
+        UserModel user = userRepo.findByUsername(loggedInUser.getUsername()).orElse(null);
+        if (password != null && !password.isBlank()) {
+            String encryptedPassword = passwordEncoder.encode(password);
+            user.setPassword(encryptedPassword);
+            userRepo.save(user);
+            System.out.println("Change password successfully");
+        } else {
+            System.out.printf("Change password failed");
+        }
+        return "redirect:/index";
     }
 }

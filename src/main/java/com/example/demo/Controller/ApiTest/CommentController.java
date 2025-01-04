@@ -24,9 +24,9 @@ public class CommentController {
                 return commentService.getCommentByPostId(postId);
         }
 
-        @PostMapping("/comments/{id}/upvote")
-        public CommentResponse upvoteComment(@PathVariable Long id) {
-                return commentService.convertToResponse(commentService.upvoteComment(id));
-        }
+//        @PostMapping("/comments/{id}/upvote")
+//        public CommentResponse upvoteComment(@PathVariable Long id) {
+//                return commentService.convertToResponse(commentService.upvoteComment(id));
+//        }
 
 }
