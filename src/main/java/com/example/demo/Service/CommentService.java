@@ -37,7 +37,7 @@ public class CommentService {
         return commentRepo.save(comment);
     }
 
-    private CommentResponse convertToResponse(CommentModel comment) {
+    public CommentResponse convertToResponse(CommentModel comment) {
         CommentResponse response = new CommentResponse();
         response.setId(comment.getId());
         response.setContent(comment.getContent());
