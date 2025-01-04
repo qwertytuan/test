@@ -76,4 +76,6 @@ public class CommentResponse {
     public void setPostUrl(String postUrl) {
         this.postUrl = postUrl;
     }
+
+
 }

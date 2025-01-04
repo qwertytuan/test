@@ -29,4 +29,8 @@ public class CommentController {
                 return commentService.convertToResponse(commentService.upvoteComment(id));
         }
 
+        @PostMapping("/comments/{id}/downvote")
+        public CommentResponse downvoteComment(@PathVariable Long id) {
+                return commentService.convertToResponse(commentService.downvoteComment(id));
+        }
 }

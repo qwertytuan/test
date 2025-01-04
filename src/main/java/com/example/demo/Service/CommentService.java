@@ -25,11 +25,17 @@ public class CommentService {
         return commentRepo.findByPostId(postId).stream().map(this::convertToResponse).collect(Collectors.toList());
     }
 
-//    public CommentModel upvoteComment(Long commentId) {
-//        Optional<CommentModel> comment = commentRepo.findById(commentId);
-//        comment.setUpvotes(comment.getUpvotes() + 1);
-//        return commentRepo.save(comment);
-//    }
+    public CommentModel upvoteComment(Long commentId) {
+        CommentModel comment = commentRepo.findById(commentId).orElseThrow(() -> new RuntimeException("Comment not found"));
+        comment.setUpvotes(comment.getUpvotes() + 1);
+        return commentRepo.save(comment);
+    }
+
+    public CommentModel downvoteComment(Long commentId) {
+        CommentModel comment = commentRepo.findById(commentId).orElseThrow(() -> new RuntimeException("Comment not found"));
+        comment.setDownvotes(comment.getDownvotes() + 1);
+        return commentRepo.save(comment);
+    }
 
     private CommentResponse convertToResponse(CommentModel comment) {
         CommentResponse response = new CommentResponse();
