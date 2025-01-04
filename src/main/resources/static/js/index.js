@@ -8,8 +8,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 postElement.classList.add('post');
                 postElement.setAttribute('data-id', post.id);
                 postElement.innerHTML = `
-                    <a href="#" onclick="openPost(event, ${post.id})">
-                   
+                    <a href="#" onclick="openPost(event, ${post.id})" class="noUnderLine">
                     <h3>${post.title}</h3>
                     <p>${post.content}</p>
                     <p class="author"><strong>Author:</strong> ${post.username}</p>
@@ -28,19 +27,20 @@ function openPost(event, postId) {
     fetch(`/api/posts/${postId}`)
         .then(response => response.json())
         .then(post => {
-
-document.getElementById('modalTitle').innerHTML = post.title;
-document.getElementById('modalContent').innerHTML = post.content;
-document.getElementById('modalAuthor').innerHTML = `<strong>Author:</strong> ${post.username}`;
-document.getElementById('modalCategory').innerHTML = `<strong>Category:</strong> ${post.category}`;
-document.getElementById('modalCreatedDate').innerHTML = `<strong>Created Date:</strong> ${post.createdDate}`;
-if (post.modifiedDate) {
-    document.getElementById('modalModifiedDate').style.display = 'block';
-    document.getElementById('modalModifiedDate').innerHTML = `<strong>Modified Date:</strong> ${post.modifiedDate}`;
-} else {
-    document.getElementById('modalModifiedDate').style.display = 'none';
-}
-document.getElementById('postModal').style.display = 'block';
+            document.getElementById('modalTitle').innerHTML = post.title;
+            document.getElementById('modalContent').innerHTML = post.content;
+            document.getElementById('modalAuthor').innerHTML = `<strong>Author:</strong> ${post.username}`;
+            document.getElementById('modalCategory').innerHTML = `<strong>Category:</strong> ${post.category}`;
+            document.getElementById('modalCreatedDate').innerHTML = `<strong>Created Date:</strong> ${post.createdDate}`;
+            if (post.modifiedDate) {
+                document.getElementById('modalModifiedDate').style.display = 'block';
+                document.getElementById('modalModifiedDate').innerHTML = `<strong>Modified Date:</strong> ${post.modifiedDate}`;
+            } else {
+                document.getElementById('modalModifiedDate').style.display = 'none';
+            }
+            document.getElementById('postModal').style.display = 'block';
+            document.getElementById('postId').value = postId;
+            GetComments(postId); // Fetch and display comments
         });
 }
 
@@ -48,11 +48,93 @@ document.querySelector('.close').addEventListener('click', function() {
     document.getElementById('postModal').style.display = 'none';
 });
 
-
 window.addEventListener('click', function(event) {
     if (event.target === document.getElementById('postModal')) {
         document.getElementById('postModal').style.display = 'none';
     }
 });
 
+function GetComments(postId) {
+    fetch(`/api/comments/byPost?postId=${postId}`)
+        .then(response => response.json())
+        .then(comments => {
+            const commentsDiv = document.getElementById('commentsList');
+            commentsDiv.innerHTML = '';
+            comments.forEach(comment => {
+                const commentElement = document.createElement('div');
+                commentElement.classList.add('comment');
+                commentElement.innerHTML = `
+                    <p>${comment.content}</p>
+                    <p class="author"><strong>Author:</strong> ${comment.username}</p>
+                    <p class="created-date"><strong>Created Date:</strong> ${comment.createdDate}</p>
+                    ${comment.modifiedDate ? `<p class="modified-date"><strong>Modified Date:</strong> ${comment.modifiedDate}</p>` : ''}
+                    <button onclick="upvoteComment(${comment.id})">Upvote</button>
+                    <button onclick="downvoteComment(${comment.id})">Downvote</button>
+                `;
+                commentsDiv.appendChild(commentElement);
+            });
+        });
+}
 
+
+
+document.getElementById('commentForm').addEventListener('submit', function(event) {
+    event.preventDefault();
+    const postId = document.getElementById('postId').value;
+    const content = document.getElementById('commentContent').value;
+
+    fetch(`/api/posts/${postId}/comment`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+            content: content,
+            post: { id: postId }
+        }),
+    })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+            return response.json();
+        })
+        .then(comment => {
+            const commentsDiv = document.getElementById('commentsList');
+            const commentElement = document.createElement('div');
+            commentElement.classList.add('comment');
+            commentElement.innerHTML = `
+            <p>${comment.content}</p>
+            <p class="author"><strong>Author:</strong> ${comment.username}</p>
+            <p class="created-date"><strong>Created Date:</strong> ${comment.createdDate}</p>
+            ${comment.modifiedDate ? `<p class="modified-date"><strong>Modified Date:</strong> ${comment.modifiedDate}</p>` : ''}
+            <button onclick="upvoteComment(${comment.id})">Upvote</button>
+            <button onclick="downvoteComment(${comment.id})">Downvote</button>
+        `;
+            commentsDiv.appendChild(commentElement);
+            document.getElementById('commentContent').value = '';
+        })
+        .catch(error => {
+            console.error('There was a problem with the fetch operation:', error);
+        });
+});
+
+function upvoteComment(commentId) {
+    fetch(`/api/comments/${commentId}/upvote`, {
+        method: 'POST',
+    })
+        .then(response => response.json())
+        .then(updatedComment => {
+            // Handle the updated comment (e.g., update the UI)
+        });
+}
+
+function downvoteComment(commentId) {
+    fetch(`/api/comments/${commentId}/downvote`, {
+        method: 'POST',
+    })
+        .then(response => response.json())
+        .then(updatedComment => {
+            // Handle the updated comment (e.g., update the UI)
+        });
+}

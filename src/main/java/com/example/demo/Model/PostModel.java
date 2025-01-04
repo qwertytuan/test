@@ -55,4 +55,10 @@ public class PostModel {
     @JsonManagedReference
     private List<CommentModel> comments;
 
+    @Column(nullable = false, columnDefinition = "int default 1")
+    private int upvotes;
+
+    @Column(nullable = false, columnDefinition = "int default 0")
+    private int downvotes;
+
 }

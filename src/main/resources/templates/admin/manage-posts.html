@@ -1,0 +1,22 @@
+<!-- src/main/resources/templates/post/manage-posts.html -->
+
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <title>Manage My Posts</title>
+</head>
+<body>
+<h1>Manage My Posts</h1>
+<div th:if="${posts}">
+  <ul>
+    <li th:each="post : ${posts}">
+      <span th:text="${post.title}"></span>
+      <a th:href="@{/admin/posts/{id}/edit(id=${post.id})}">Edit</a>
+      <form th:action="@{/admin/posts/{id}/confirm-delete(id=${post.id})}" method="get" style="display:inline;">
+        <button type="submit">Delete</button>
+      </form>
+    </li>
+  </ul>
+</div>
+</body>
+</html>

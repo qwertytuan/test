@@ -1,13 +1,9 @@
 package com.example.demo.Model;
 
 import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
 import org.springframework.format.annotation.DateTimeFormat;
 
-import java.time.LocalDateTime;
-
-import java.util.Date;
+import java.sql.Timestamp;
 
 @Entity
 public class CommentModel {
@@ -16,9 +12,11 @@ public class CommentModel {
     private Long id;
     @Column
     private String content;
-    @Column
-    @DateTimeFormat(pattern = "yyyy-MM-dd:HH:mm:ss")
-    private Date date;
+    @Column(nullable = false, columnDefinition = "int default 1")
+    private Integer upvotes;
+    @Column(nullable = false, columnDefinition = "int default 0")
+    private Integer downvotes;
+
     @ManyToOne
     @JoinColumn(name = "user_id", referencedColumnName = "id", nullable = false)
     private UserModel user;
@@ -27,12 +25,15 @@ public class CommentModel {
     @JoinColumn(name = "post_id", referencedColumnName = "id", nullable = false)
     private PostModel post;
 
-    @Column
-    private int upvotes;
+    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    private Timestamp date;
 
-    @Column
-    private int downvotes;
+    @PrePersist
+    protected void onCreate() {
+        date = new Timestamp(System.currentTimeMillis());
+    }
 
+    // Getters and setters
     public Long getId() {
         return id;
     }
@@ -47,14 +48,6 @@ public class CommentModel {
 
     public void setContent(String content) {
         this.content = content;
-    }
-
-    public Date getDate() {
-        return date;
-    }
-
-    public void setDate(Date date) {
-        this.date = date;
     }
 
     public UserModel getUser() {
@@ -73,19 +66,27 @@ public class CommentModel {
         this.post = post;
     }
 
-    public int getUpvotes() {
+    public Integer getUpvotes() {
         return upvotes;
     }
 
-    public int getDownvotes() {
-        return downvotes;
-    }
-
-    public void setUpvotes(int upvotes) {
+    public void setUpvotes(Integer upvotes) {
         this.upvotes = upvotes;
     }
 
-    public void setDownvotes(int downvotes) {
+    public Integer getDownvotes() {
+        return downvotes;
+    }
+
+    public void setDownvotes(Integer downvotes) {
         this.downvotes = downvotes;
+    }
+
+    public Timestamp getDate() {
+        return date;
+    }
+
+    public void setDate(Timestamp date) {
+        this.date = date;
     }
 }

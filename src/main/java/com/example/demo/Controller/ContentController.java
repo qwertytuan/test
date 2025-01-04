@@ -44,13 +44,16 @@ public class ContentController {
     public String index(@AuthenticationPrincipal User loggedInUser, Model model) {
         Long userId = loggedInUser != null ? userRepo.findByUsername(loggedInUser.getUsername()).get().getId() : null;
         String username = loggedInUser != null ? loggedInUser.getUsername() : null;
+        String role = loggedInUser != null ? userRepo.findByUsername(loggedInUser.getUsername()).get().getRole() : null;
+        boolean isAdmin = "ADMIN".equals(role);
         String avatarUrl = loggedInUser != null ? userRepo.findByUsername(loggedInUser.getUsername()).get().getAvatarUrl() : null;
         model.addAttribute("avatarUrl", Objects.requireNonNullElse(avatarUrl, DEFAULT_AVATAR_URL));
-
         model.addAttribute("username", username);
         model.addAttribute("userId", userId);
         // Add an attribute to pass to the view to check login status
         model.addAttribute("isLoggedIn", loggedInUser != null);
+        model.addAttribute("role", role);
+        model.addAttribute("isAdmin", isAdmin);
         return "index"; // Render the 'index.html' file
     }
 
