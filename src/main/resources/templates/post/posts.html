@@ -3,29 +3,134 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>All Posts</title>
-    <link rel="stylesheet" href="/css/style.css">
+    <title>My Home Page</title>
+    <script src="/js/index.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f6f7f8;
+        }
+
+        header {
+            background-color: #ff4500;
+            color: white;
+            padding: 15px 10px;
+            text-align: center;
+        }
+
+        nav {
+            display: flex;
+            justify-content: center;
+            background-color: #333;
+        }
+
+        nav a {
+            color: white;
+            padding: 14px 20px;
+            text-decoration: none;
+            text-align: center;
+        }
+
+        nav a:hover {
+            background-color: #ddd;
+            color: black;
+        }
+
+        main {
+            padding: 20px;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .post {
+            background-color: red;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            margin-bottom: 20px;
+            padding: 15px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .post h3 {
+            margin: 0 0 10px;
+            font-size: 1.5em;
+        }
+
+        .post p {
+            margin: 5px 0;
+        }
+
+        .post .author, .post .category, .post .created-date, .post .modified-date {
+            font-size: 0.9em;
+            color: #555;
+        }
+
+        footer {
+            background-color: #333;
+            color: white;
+            text-align: center;
+            padding: 10px;
+            bottom: 0;
+            width: 100%;
+        }
+        .avatar {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+        }
+    </style>
 </head>
 <body>
 <header>
-    <h1>All Posts</h1>
+    <h1>Welcome to My Home Page</h1>
 </header>
+<nav>
+    <a href="/index">Home</a>
+    <a href="#">About</a>
+    <a href="#">Services</a>
+    <a href="#">Contact</a>
+    <a th:if="${!isLoggedIn}" href="/req/login">Login</a>
+    <a th:if="${!isLoggedIn}" href="/req/signup">Sign Up</a>
+    <a th:if="${isLoggedIn}" href="/profile" th:text="${username}"></a>
+    <a th:if="${isLoggedIn}" href="/users/posts/manage">Manage Post</a>
+    <a th:if="${isLoggedIn}" href="/users/posts/create">Create Post</a>
+    <a th:if="${isLoggedIn}"><img class="avatar" th:src="${avatarUrl}" alt="Avatar"></a>
+    <a th:if="${isLoggedIn}" href="/req/logout">Logout</a>
+
+</nav>
 <main>
-    <div>
-        <ul>
-            <li th:each="post : ${posts}">
-                <h2 th:text="${post.title}">Post Title</h2>
-                <p th:text="${post.content}">Post Content</p>
-                <p><strong>Author:</strong> <span th:text="${post.user.getUsername()}">Author Name</span></p>
-                <p><strong>Category:</strong> <span th:text="${post.category}">Category</span></p>
-                <p><strong>Created Date:</strong> <span th:text="${post.createdDate}">Created Date</span></p>
-                <p th:if="${post.modifiedDate != null}"><strong>Modified Date:</strong> <span th:text="${post.modifiedDate}">Modified Date</span></p>
-            </li>
-        </ul>
+    <h2>Posts</h2>
+    <div id="posts">
+
     </div>
+    <h2>About Me</h2>
+    <p>This is a paragraph about me. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam scelerisque nisl ut sapien interdum, nec ullamcorper velit dapibus. Sed ac vestibulum libero, nec tempor felis.</p>
+    <h2>Services</h2>
+    <p>These are the services I offer. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam scelerisque nisl ut sapien interdum, nec ullamcorper velit dapibus. Sed ac vestibulum libero, nec tempor felis.</p>
 </main>
 <footer>
     <p>Footer Content &copy; 2024</p>
 </footer>
+<script th:inline="javascript">
+    fetch('/api/posts/' + [[${postID}]])
+        .then(response => response.json())
+        .then(posts => {
+            const postsDiv = document.getElementById('posts');
+            posts.forEach(post => {
+                const postDiv = document.createElement('div');
+                postDiv.classList.add('post');
+                postDiv.innerHTML = `
+                    <h3>${post.title}</h3>
+                    <p>${post.content}</p>
+                    <p class="author">Author: ${post.author}</p>
+                    <p class="category">Category: ${post.category}</p>
+                `;
+                postsDiv.appendChild(postDiv);
+            });
+        });
+
+</script>
 </body>
 </html>

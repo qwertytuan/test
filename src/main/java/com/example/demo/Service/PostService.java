@@ -65,4 +65,9 @@ public class PostService {
         }
         return null;
     }
+
+    public void createPost(PostModel post) {
+        postRepo.save(post);
+    }
+
 }

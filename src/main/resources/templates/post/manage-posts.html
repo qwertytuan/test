@@ -12,7 +12,7 @@
     <li th:each="post : ${posts}">
       <span th:text="${post.title}"></span>
       <a th:href="@{/users/posts/{id}/edit(id=${post.id})}">Edit</a>
-      <form th:action="@{/users/posts/{id}/delete(id=${post.id})}" method="post" style="display:inline;">
+      <form th:action="@{/users/posts/{id}/confirm-delete(id=${post.id})}" method="get" style="display:inline;">
         <button type="submit">Delete</button>
       </form>
     </li>

@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <title>Confirm Delete Post</title>
+</head>
+<body>
+<h1>Confirm Delete Post</h1>
+<p>Are you sure you want to delete this post?</p>
+<form th:action="@{/users/posts/{id}/delete(id=${post.id})}" method="post">
+  <button type="submit">Yes, Delete</button>
+  <a th:href="@{/users/posts}">Cancel</a>
+</form>
+</body>
+</html>

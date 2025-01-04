@@ -49,7 +49,7 @@ public class PostController {
         if (post != null) {
             model.addAttribute("post", post);
             model.addAttribute("errorMessage", "Post not found with id: " + id);
-            return "/test/post";
+            return "/post/posts";
         } else {
             return "/error/post-not-found";
         }
@@ -141,10 +141,34 @@ public class PostController {
 
 
     @GetMapping("/users/posts/create")
-    public String getCreatePostPage() {
+    public String getCreatePostPage(Model model) {
+        model.addAttribute("post", new PostModel());
         return "/post/create-post";
     }
 
+    @PostMapping("/users/posts/create")
+    public String createPost(PostModel post, Principal principal, Model model) {
+        String username = principal.getName();
+        UserModel currentUser = userService.getUserByUsername(username);
+        post.setUser(currentUser);
+        postService.createPost(post);
+        return "redirect:/users/posts";
+    }
+
+
+    @GetMapping("/users/posts/{id}/confirm-delete")
+    public String getConfirmDeletePostPage(@PathVariable Long id, Model model, Principal principal) {
+        PostModel post = postService.getPostById(id);
+        String username = principal.getName();
+        UserModel currentUser = userService.getUserByUsername(username);
+        if (post != null && (post.getUser().getId().equals(currentUser.getId()) || currentUser.getRole().contains("ADMIN"))) {
+            model.addAttribute("post", post);
+            return "/post/confirm-delete";
+        } else {
+            model.addAttribute("errorMessage", "You do not have permission to delete this post or post not found");
+            return "/error/post-not-found";
+        }
+    }
 
 
 }
