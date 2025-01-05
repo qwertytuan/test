@@ -2,6 +2,7 @@ package com.example.demo.Service;
 
 import com.example.demo.Model.CommentModel;
 import com.example.demo.Model.CommentResponse;
+import com.example.demo.Model.UserModel;
 import com.example.demo.Repo.CommentRepo;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -54,4 +55,9 @@ public class CommentService {
     public void deleteCommentsByPostId(Long id) {
         commentRepo.deleteByPostId(id);
     }
+
+    public CommentModel saveComment(CommentModel comment) {
+        return commentRepo.save(comment);
+    }
+
 }
