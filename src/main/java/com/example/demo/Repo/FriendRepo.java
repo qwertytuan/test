@@ -1,11 +1,14 @@
 package com.example.demo.Repo;
 
-import com.example.demo.Model.FriendList;
-import com.example.demo.Model.FriendStatus;
+import com.example.demo.Model.FriendModel;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
-public interface FriendRepo extends JpaRepository<FriendList, Long> {
-    List<FriendList> findByStatus(FriendStatus status);
+@Repository
+public interface FriendRepo extends JpaRepository<FriendModel, Long> {
+    FriendModel findByUserIdAndFriendId(Long userId, Long friendId);
+
+    List<FriendModel> findAllByUserId(Long userId);
 }

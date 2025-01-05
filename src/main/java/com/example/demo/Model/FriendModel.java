@@ -3,11 +3,10 @@ package com.example.demo.Model;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.Getter;
-import com.example.demo.Model.FriendStatus;
 
 @Entity
 @Table (name = "user_friends")
-public class FriendList {
+public class FriendModel {
     // Getters and setters
     @Getter
     @Id
@@ -28,10 +27,10 @@ public class FriendList {
     @Column(nullable = false)
     private FriendStatus status;
 
-    public FriendList() {
+    public FriendModel() {
     }
 
-    public FriendList(UserModel user, UserModel friend, FriendStatus status) {
+    public FriendModel(UserModel user, UserModel friend, FriendStatus status) {
         this.user = user;
         this.friend = friend;
         this.status = status;
@@ -51,5 +50,17 @@ public class FriendList {
 
     public void setStatus(FriendStatus status) {
         this.status = status;
+    }
+
+    public UserModel getUser() {
+        return user;
+    }
+
+    public UserModel getFriend() {
+        return friend;
+    }
+
+    public FriendStatus getStatus() {
+        return status;
     }
 }

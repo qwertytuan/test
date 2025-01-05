@@ -122,3 +122,13 @@ button:hover {
     color: #a8a8a8;
 }
 
+textarea {
+    width: 500px;
+    height: 500px;
+    background: white;
+    border: none;
+    outline: none;
+    font-size: 1rem;
+    padding: 5px;
+    color: #fff;
+}
