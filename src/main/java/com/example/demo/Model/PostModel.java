@@ -17,7 +17,7 @@ public class PostModel {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false, length = 100)
+    @Column(nullable = false, columnDefinition = "LONGTEXT")
     private String title;
 
     @Column(nullable = false)
