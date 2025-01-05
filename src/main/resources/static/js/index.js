@@ -41,6 +41,7 @@ function openPost(event, postId) {
             document.getElementById('postModal').style.display = 'block';
             document.getElementById('postId').value = postId;
             GetComments(postId); // Fetch and display comments
+            Recap(post.content);
         });
 }
 
@@ -138,3 +139,62 @@ function downvoteComment(commentId) {
             // Handle the updated comment (e.g., update the UI)
         });
 }
+async function Recap(postContent) {
+    const chatContainer = document.getElementById('chat-container');
+    const messagesDiv = document.getElementById('messages');
+    const loading = document.getElementById('loading');
+    const input= postContent;
+    console.log(postContent);
+    console.log(input);
+    if (input === '') return;
+    let bodyContent;
+        bodyContent = JSON.stringify({
+            message: `Bạn là chatbot của một trang web viết bài về công nghệ, đọc đoạn văn sau và đưa ra giải thích các thuật ngữ công nghệ thường dùng:${input}`
+
+    });
+    loading.style.display = 'block';
+    const response = await fetch('/api/chatbot/message', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: bodyContent
+    });
+    loading.style.display = 'none';
+    const reply = await response.text();
+    messagesDiv.innerHTML += `<p>Bot: ${reply}</p>`;
+}
+
+async function SendMessage() {
+    const sendBtn = document.getElementById('send-btn');
+    const chatContainer = document.getElementById('chat-container');
+    const messagesDiv = document.getElementById('messages');
+    const inputField = document.getElementById('input');
+    const loading = document.getElementById('loading');
+    const input = inputField.value.trim();
+    if (input === '') return;
+
+    // Determine the body content based on the count
+    let bodyContent;
+    bodyContent = JSON.stringify({message: input});
+
+
+    loading.style.display = 'block';
+    const response = await fetch('/api/chatbot/message', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: bodyContent
+    });
+    loading.style.display = 'none';
+    const reply = await response.text();
+    messagesDiv.innerHTML += `<p>You: ${input}</p><p>Bot: ${reply}</p>`;
+    inputField.value = '';
+}
+ function openRecapModal()
+ {
+     const recapbtn=document.getElementById("chatModal")
+     recapbtn.style.display="block";
+ }
+

@@ -117,6 +117,29 @@
         text-decoration: none;
         cursor: pointer;
     }
+/*    AI*/
+    #chat-container {
+        width: 500px;
+        height: 500px;
+        border: 1px solid #ccc;
+        padding: 20px;
+        overflow-y: auto;
+    }
+    #loading {
+        display: none;
+        border: 8px solid #f3f3f3;
+        border-radius: 50%;
+        border-top: 8px solid #3498db;
+        width: 40px;
+        height: 40px;
+        animation: spin 2s linear infinite;
+        margin: 20px auto;
+    }
+
+    @keyframes spin {
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(360deg); }
+    }
 </style>
 <body>
 <header>
@@ -149,6 +172,36 @@
             <span class="close">&times;</span>
             <h2 id="modalTitle">Post Title</h2>
             <p id="modalContent">Post Content</p>
+<!--            ////////////////////////////////////-->
+            <button type="button" class="btn btn-primary" style="width: 100px; height: 30px; background: blue; color: black" onclick="openRecapModal()">Recap</button>
+            <div class="modal1 fade" id="chatModal" tabindex="-1" role="dialog" aria-labelledby="chatModalLabel" aria-hidden="true">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="chatModalLabel">Chat with Bot</h5>
+                            <button type="button" class="close" data-dismiss="modal1" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            <div id="chat-container">
+                                <div id="loading"></div>
+                                <div id="messages">
+                                    <p>Bot: Hi, how can I help you today?</p>
+                                </div>
+                                <input type="text" id="input" placeholder="Type a message...">
+                                <button id="send-btn" onclick="SendMessage()">Send</button>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal1">Close</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+<!--            //////////////////////////-->
+
             <p><strong>Author:</strong> <span id="modalAuthor"></span></p>
             <p><strong>Category:</strong> <span id="modalCategory"></span></p>
             <p><strong>Created Date:</strong> <span id="modalCreatedDate"></span></p>
@@ -171,6 +224,11 @@
 <footer>
     <p>Footer Content &copy; 2024</p>
 </footer>
+
+
+
+
+
 
 <script src="/js/index.js"></script>
 </body>

@@ -72,30 +72,56 @@ public class PostController {
             return "/error/post-not-found";
         }
     }
-
-    @GetMapping("/users/posts")
-    public String getUserPosts(Principal principal, Model model) {
-        String username = principal.getName();
-        UserModel currentUser =  userService.getUserByUsername(username);
-        List<PostModel> posts = postService.getPostsByUser(currentUser);
-        model.addAttribute("posts", posts);
+    @GetMapping("/users/{id}/posts")
+    public String getUserPosts(@PathVariable Long id, Model model, Principal principal,@AuthenticationPrincipal User loggedInUser) {
+        UserModel user=userService.getUserById(id);
+        String username=principal.getName();
+        List<PostModel> posts= postService.getPostsByUser(user);
+        model.addAttribute("posts",posts);
         if (posts.isEmpty()) {
             model.addAttribute("errorMessage", "No posts found");
             return "/error/post-not-found";
         }
-        return "/post/posts";
+        Long userId = loggedInUser != null ? userRepo.findByUsername(loggedInUser.getUsername()).get().getId() : null;
+        username = loggedInUser != null ? loggedInUser.getUsername() : null;
+        String role = loggedInUser != null ? userRepo.findByUsername(loggedInUser.getUsername()).get().getRole() : null;
+        boolean isAdmin = "ADMIN".equals(role);
+        String avatarUrl = loggedInUser != null ? userRepo.findByUsername(loggedInUser.getUsername()).get().getAvatarUrl() : null;
+        model.addAttribute("avatarUrl", Objects.requireNonNullElse(avatarUrl, DEFAULT_AVATAR_URL));
+        model.addAttribute("username", username);
+        model.addAttribute("userId", userId);
+        // Add an attribute to pass to the view to check login status
+        model.addAttribute("isLoggedIn", loggedInUser != null);
+        model.addAttribute("role", role);
+        model.addAttribute("isAdmin", isAdmin);
+
+        return "post/posts"; // Render the 'index.html' file
     }
 
-    @GetMapping("/users/{id}/posts")
-    public String getUserPosts(@PathVariable Long id, Model model) {
-        UserModel user = userService.getUserById(id);
-        List<PostModel> posts = postService.getPostsByUser(user);
-        model.addAttribute("posts", posts);
+    @GetMapping("/users/posts")
+    public String getUserPosts(@AuthenticationPrincipal User loggedInUser , Model model, Principal principal) {
+        String username= principal.getName();
+        UserModel currentUser =  userService.getUserByUsername(username);
+        List<PostModel> posts= postService.getPostsByUser(currentUser);
+        model.addAttribute("posts",posts);
         if (posts.isEmpty()) {
             model.addAttribute("errorMessage", "No posts found");
             return "/error/post-not-found";
         }
-        return "/post/posts";
+        Long userId = loggedInUser != null ? userRepo.findByUsername(loggedInUser.getUsername()).get().getId() : null;
+        username = loggedInUser != null ? loggedInUser.getUsername() : null;
+        String role = loggedInUser != null ? userRepo.findByUsername(loggedInUser.getUsername()).get().getRole() : null;
+        boolean isAdmin = "ADMIN".equals(role);
+        String avatarUrl = loggedInUser != null ? userRepo.findByUsername(loggedInUser.getUsername()).get().getAvatarUrl() : null;
+        model.addAttribute("avatarUrl", Objects.requireNonNullElse(avatarUrl, DEFAULT_AVATAR_URL));
+        model.addAttribute("username", username);
+        model.addAttribute("userId", userId);
+        // Add an attribute to pass to the view to check login status
+        model.addAttribute("isLoggedIn", loggedInUser != null);
+        model.addAttribute("role", role);
+        model.addAttribute("isAdmin", isAdmin);
+
+        return "post/posts"; // Render the 'index.html' file
     }
 
     @GetMapping("/users/posts/manage")

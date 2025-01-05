@@ -57,4 +57,9 @@ public class ContentController {
         return "index"; // Render the 'index.html' file
     }
 
+    @GetMapping("/chatbot")
+    public String chatbot()
+    {
+        return "ChatBot";
+    }
 }
