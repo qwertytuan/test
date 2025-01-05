@@ -2,9 +2,18 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>$Title$</title>
+  <title>Show Friend</title>
+  <link rel="stylesheet" href="/static/css/style.css">
 </head>
 <body>
-$END$
+<h1>Show Friend</h1>
+<p>Below is the list of all your friends:</p>
+<ul>
+  <li th:each="friend : ${friends}">
+    <span th:text="${friend.getUsername()}">Friend Name</span>
+    <a th:href="@{/users/friends/{id}/delete(id=${friend.getId()})}">Delete</a>
+  </li>
+</ul>
+<p><a href="/users">Back to Home</a></p>
 </body>
 </html>
