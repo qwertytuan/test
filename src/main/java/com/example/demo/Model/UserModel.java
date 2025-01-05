@@ -21,7 +21,7 @@ public class UserModel {
 
     @OneToMany(mappedBy = "user")
     @JsonBackReference
-    private List<FriendList> friends;
+    private List<FriendModel> friends;
 
     @OneToMany(mappedBy = "user")
     @JsonBackReference
@@ -37,10 +37,10 @@ public class UserModel {
         this.role = role;
     }
 
-    public List<FriendList> getFriends() {
+    public List<FriendModel> getFriends() {
         return friends;
     }
-    public void setFriends(List<FriendList> friends) {
+    public void setFriends(List<FriendModel> friends) {
         this.friends = friends;
     }
 
