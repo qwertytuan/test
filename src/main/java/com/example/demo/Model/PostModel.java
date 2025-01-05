@@ -23,8 +23,7 @@ public class PostModel {
     @Column(nullable = false)
     private String imageUrl;
 
-    @Column(nullable = false)
-    @Lob
+    @Column(nullable = false, columnDefinition = "LONGTEXT")
     private String content;
 
     @ManyToOne
